@@ -49,7 +49,8 @@
 ---
 ##增加UI的逻辑:Controllers
 **index.html**
-    <div ng-app="invoice1" ng-controller="InvoiceController as invoice">
+```
+<div ng-app="invoice1" ng-controller="InvoiceController as invoice">
   <b>Invoice:</b>
   <div>
     Quantity: <input type="number" min="0" ng-model="invoice.qty" required >
@@ -68,3 +69,42 @@
     <button class="btn" ng-click="invoice.pay()">Pay</button>
   </div>
 </div>
+```
+**Invocie1.js**
+```
+
+  this.cost = 2;
+  this.inCurr = 'EUR';
+  this.currencies = ['USD', 'EUR', 'CNY'];
+  this.usdToForeignRates = {
+    USD: 1,
+    EUR: 0.74,
+    CNY: 6.09
+  };
+
+  this.total = function total(outCurr) {
+    return this.convertCurrency(this.qty * this.cost, this.inCurr, outCurr);
+  };
+  this.convertCurrency = function convertCurrency(amount, inCurr, outCurr) {
+    return amount * this.usdToForeignRates[outCurr] / this.usdToForeignRates[inCurr];
+  };
+  this.pay = function pay() {
+    window.alert('Thanks!');
+  };
+});
+
+```
+尝试运行上面的代码,看发生了哪些变化.
+
+首先,在一个新的Javascript文件中包含了一个控制器.更准确的说,这个文件包含了一个创建控制器实例的构造函数.控制器的目的是为了提供变量和函数给表达式和指令.
+
+除了新文件中包含的控制器,我们还在HTML中增加了一个`ng-controller`指令.这个指令告诉angular这个新的`InvoiceController`控制器对这个元素的指令和它的所有子元素负责.`InvoiceController as invoice`语法告诉Angular实例化这个控制器并且保存在当前作用域的`invoice`变量中.
+
+我们也可以使得在这个页面中的所有表达式不通过控制器实例而是`invoice.`前缀去读写变量.`currencies`被定义在控制器中,并且通过`ng-repeat`指令添加到模板中.因为控制器包含一个`total`函数,所以我们也能绑定`{{invoice.total(...)}}`的值到DOM上.
+
+再次说明这个绑定是动态的,DOM会在函数结果发生改变时自动更新值.这个按钮使用了`ng-click`指令.当按钮被按下时,表达式的值就会被计算出来.
+
+在新的JavaScript文件中,我们也可以创建一个模块(module)去注册控制器.在下一节会讨论模块.
+
+接下来的图片展示了控制器,域和视图的工作机制.
+![原理图](/assets/concepts-databinding2.png)
