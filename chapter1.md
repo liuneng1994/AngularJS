@@ -182,4 +182,8 @@ function InvoiceController(currencyConverter) {
   </div>
 </div>
 ```
+![](https://docs.angularjs.org/img/guide/concepts-module-service.png)
+我们把`convertCurrency`函数和现存的`currencies`定义移动到了新的`finance2.js`中.但是控制器要怎么样才能获得一个分离的函数呢.
+
+这就是
 
