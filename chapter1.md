@@ -19,19 +19,22 @@
 
 ## 数据绑定示例
 
-    <div ng-app ng-init="qty=1;cost=2">
-      <b>Invoice:</b>
-      <div>
-        Quantity: <input type="number" min="0" ng-model="qty">
-      </div>
-      <div>
-        Costs: <input type="number" min="0" ng-model="cost">
-      </div>
-      <div>
-        <b>Total:</b> {{qty * cost | currency}}
-      </div>
-    </div>
+```
+<div ng-app ng-init="qty=1;cost=2">
+  <b>Invoice:</b>
+  <div>
+    Quantity: <input type="number" min="0" ng-model="qty">
+  </div>
+  <div>
+    Costs: <input type="number" min="0" ng-model="cost">
+  </div>
+  <div>
+    <b>Total:</b> {{qty * cost | currency}}
+  </div>
+</div>
+```
 
----
+&nbsp;&nbsp;&nbsp;&nbsp;上面的例子看上去就像带有一些新标记的普通的HTML.在Angular中,一个这样的文件就叫做模板.当Angular启动你的应用程序时,会通过编译器去解析和处理模板中的新标记.
 
+&nbsp;&nbsp;&nbsp;&nbsp;
 
