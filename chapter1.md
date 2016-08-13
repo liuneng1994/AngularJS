@@ -114,7 +114,6 @@
 
 接下来的图片展示了控制器,域和视图的工作机制.
 
-
 ![原理图](/assets/concepts-databinding2.png)
 
 ---
@@ -188,7 +187,6 @@ function InvoiceController(currencyConverter) {
 ```
 
 ![](/assets/concepts-module-service.png)
-
 
 我们把`convertCurrency`函数和现存的`currencies`定义移动到了新的`finance2.js`中.但是控制器要怎么样才能获得一个分离的函数呢.
 
