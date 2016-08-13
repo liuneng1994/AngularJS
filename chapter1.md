@@ -160,7 +160,9 @@ function InvoiceController(currencyConverter) {
  };
 }]);
 ```
+
 **index.html**
+
 ```
 <div ng-app="invoice2" ng-controller="InvoiceController as invoice">
   <b>Invoice:</b>
@@ -182,8 +184,100 @@ function InvoiceController(currencyConverter) {
   </div>
 </div>
 ```
-![](https://docs.angularjs.org/img/guide/concepts-module-service.png)
+
+![](/assets/concepts-module-service.png)
 我们把`convertCurrency`函数和现存的`currencies`定义移动到了新的`finance2.js`中.但是控制器要怎么样才能获得一个分离的函数呢.
 
-这就是
+这时候依赖注入就要登场了,依赖注入\(DI\)是一种软件设计模式,能够处理对象和函数如何创建,他们怎么获得他们的依赖.在Angular中的所有东西\(指令,过滤器,控制器,服务...\)都是通过依赖注入进行创建和注入的.在Angular中,依赖注入容器被称作注射器\(injector\).
+
+为了使用DI,需要一个地方去注册那些一起工作的对象或函数.在Angular中,模块就是起这个作用.当Angular启动时,它会使用通过`ng-app`定义的模块配置和这个模块所依赖的所有模块的配置.
+
+在上述例子中:模板内包含了`ng-app="invoice2"`.这意味着Angular会使用`invoice2`这个模块作为应用程序的主模块.代码片段`angular.module('invoice2', ['finance2'])`定义了`invoice2`模块依赖`finance2`模块.类似这种方式,Angular也可以让`InvoiceController`使用`currencyConverter`服务.
+
+现在Angular知道了应用程序的所有组成部分,它需要去创建它们.在前一节我们看到了控制器是通过一个工厂函数去创建.对于服务来说也有多种途径去定义它们的工厂.在上面的例子中,我们使用了一个匿名函数作为`currencyConverter`的工厂函数.这个函数应该返回一个`currencyConverter`实例.
+
+回到最初的问题:`InvoiceController`是如何获得`currencyConverter`函数的引用的?在Angular中,只需要简单的在构造函数中定义参数即可.之后,注射器能够按正确的顺序创建所需的对象并注入到依赖它们的工厂中.在我们的例子中,`InvoiceController`有一个`currencyConverter`参数.因此,Angular能够知道控制器与服务之间的依赖,并且使用服务对象作为对象去调用控制器.
+
+最后的一个变化是,我们传递了一个数组给`module.controller`函数而不是一个纯粹的函数,这个数组首先包含了这个控制器需要的服务的名字.最后一项是控制器的贡枣函数.Angular使用数组的语法去定义依赖.是的在压缩代码之后依然可以使用DI,代码压缩可能会重命名控制器构造函数的参数名称成一个更短的,如`a`.
+
+---
+
+##访问服务器
+接下来的例子完成从雅虎金融APi获取汇率的功能.
+**invoice3.js**
+```
+angular.module('invoice3', ['finance3'])
+.controller('InvoiceController', ['currencyConverter', function InvoiceController(currencyConverter) {
+  this.qty = 1;
+  this.cost = 2;
+  this.inCurr = 'EUR';
+  this.currencies = currencyConverter.currencies;
+
+  this.total = function total(outCurr) {
+    return currencyConverter.convert(this.qty * this.cost, this.inCurr, outCurr);
+  };
+  this.pay = function pay() {
+    window.alert('Thanks!');
+  };
+}]);
+```
+**finance3.js**
+```
+angular.module('finance3', [])
+.factory('currencyConverter', ['$http', function($http) {
+  var YAHOO_FINANCE_URL_PATTERN =
+        '//query.yahooapis.com/v1/public/yql?q=select * from ' +
+        'yahoo.finance.xchange where pair in ("PAIRS")&format=json&' +
+        'env=store://datatables.org/alltableswithkeys&callback=JSON_CALLBACK';
+  var currencies = ['USD', 'EUR', 'CNY'];
+  var usdToForeignRates = {};
+
+  var convert = function(amount, inCurr, outCurr) {
+    return amount * usdToForeignRates[outCurr] / usdToForeignRates[inCurr];
+  };
+
+  var refresh = function() {
+    var url = YAHOO_FINANCE_URL_PATTERN.
+               replace('PAIRS', 'USD' + currencies.join('","USD'));
+    return $http.jsonp(url).then(function(response) {
+      var newUsdToForeignRates = {};
+      angular.forEach(response.data.query.results.rate, function(rate) {
+        var currency = rate.id.substring(3,6);
+        newUsdToForeignRates[currency] = window.parseFloat(rate.Rate);
+      });
+      usdToForeignRates = newUsdToForeignRates;
+    });
+  };
+
+  refresh();
+
+  return {
+    currencies: currencies,
+    convert: convert
+  };
+}]);
+```
+**index.html**
+```
+<div ng-app="invoice3" ng-controller="InvoiceController as invoice">
+  <b>Invoice:</b>
+  <div>
+    Quantity: <input type="number" min="0" ng-model="invoice.qty" required >
+  </div>
+  <div>
+    Costs: <input type="number" min="0" ng-model="invoice.cost" required >
+    <select ng-model="invoice.inCurr">
+      <option ng-repeat="c in invoice.currencies">{{c}}</option>
+    </select>
+  </div>
+  <div>
+    <b>Total:</b>
+    <span ng-repeat="c in invoice.currencies">
+      {{invoice.total(c) | currency:c}}
+    </span>
+    <button class="btn" ng-click="invoice.pay()">Pay</button>
+  </div>
+</div>
+```
+我们`finance`模块的`currencyConverter`服务现在使用了`$http`.一个由Angular提供的访问后台服务器的内建的服务.`$http`
 
