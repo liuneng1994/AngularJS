@@ -1,3 +1,6 @@
-# My Awesome Book
+# AngularJS
 
-This file file serves as your book's preface, a great place to describe your book's content and ideas.
+AngularJS学习笔记
+
+内容取自[angular官网开发者指南](https://docs.angularjs.org/guide/concepts)
+
