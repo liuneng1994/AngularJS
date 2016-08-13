@@ -113,6 +113,8 @@
 在新的JavaScript文件中,我们也可以创建一个模块\(module\)去注册控制器.在下一节会讨论模块.
 
 接下来的图片展示了控制器,域和视图的工作机制.
+
+
 ![原理图](/assets/concepts-databinding2.png)
 
 ---
@@ -186,6 +188,8 @@ function InvoiceController(currencyConverter) {
 ```
 
 ![](/assets/concepts-module-service.png)
+
+
 我们把`convertCurrency`函数和现存的`currencies`定义移动到了新的`finance2.js`中.但是控制器要怎么样才能获得一个分离的函数呢.
 
 这时候依赖注入就要登场了,依赖注入\(DI\)是一种软件设计模式,能够处理对象和函数如何创建,他们怎么获得他们的依赖.在Angular中的所有东西\(指令,过滤器,控制器,服务...\)都是通过依赖注入进行创建和注入的.在Angular中,依赖注入容器被称作注射器\(injector\).
