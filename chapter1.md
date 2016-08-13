@@ -34,17 +34,17 @@
 </div>
 ```
 
-    上面的例子看上去就像带有一些新标记的普通的HTML.在Angular中,一个这样的文件就叫做模板.当Angular启动你的应用程序时,会通过编译器去解析和处理模板中的新标记.这个被加载,和渲染之后的DOM就称作视图
+上面的例子看上去就像带有一些新标记的普通的HTML.在Angular中,一个这样的文件就叫做模板.当Angular启动你的应用程序时,会通过编译器去解析和处理模板中的新标记.这个被加载,和渲染之后的DOM就称作视图
 
-    第一类新标记称作指令\(directives\).他们为HTML的元素或属性提供特殊的行为.在上面的例子中,我们使用`ng-app`属性,它是一个用于自动初始化应用程序的指令.Angular也定义了一个为`input`元素添加其他行为的指令,`ng-model`指令可以像变量中存储值或从变量更新值.
+第一类新标记称作指令\(directives\).他们为HTML的元素或属性提供特殊的行为.在上面的例子中,我们使用`ng-app`属性,它是一个用于自动初始化应用程序的指令.Angular也定义了一个为`input`元素添加其他行为的指令,`ng-model`指令可以像变量中存储值或从变量更新值.
 
 > **自定义指令访问DOM**:在Angular中,应用程序只应该在指令中访问DOM.这一点很重要,因为访问DOM的部分难于测试.如果你需要直接访问DOM,应该写一个自定义的指令
 
-    第二种标记是双花括号`{{ expression | filter}}`:当编译器遇到这个标记,标记会被替换为对应表达式的值.在模板中的表达式是一个类似JavaScript的代码片段,表达式允许Angular读写变量.注意那些变量不是全局变量,更像是在JavaScript函数作用域中的局部变量.Angular提供一个域\(scope\)给表达式访问.这些存储在域中的变量的值引用自接下来会提到的_model_中.
+第二种标记是双花括号`{{ expression | filter}}`:当编译器遇到这个标记,标记会被替换为对应表达式的值.在模板中的表达式是一个类似JavaScript的代码片段,表达式允许Angular读写变量.注意那些变量不是全局变量,更像是在JavaScript函数作用域中的局部变量.Angular提供一个域\(scope\)给表达式访问.这些存储在域中的变量的值引用自接下来会提到的_model_中.
 
-    在上面的例子中包含了一个过滤器.过滤器可以格式化表达式所显示的值.在上面例子中的`currency`过滤器能将一个数字格式化成金额的形式,类似`$1111`.
+在上面的例子中包含了一个过滤器.过滤器可以格式化表达式所显示的值.在上面例子中的`currency`过滤器能将一个数字格式化成金额的形式,类似`$1111`.
 
-    在上面的例子中,Angular提供了动态绑定:无论何时输入的值改变,表达式的值也会自动重新计算并且DOM也会随之更新.这就是之后会提到的_双向数据绑定_.
+在上面的例子中,Angular提供了动态绑定:无论何时输入的值改变,表达式的值也会自动重新计算并且DOM也会随之更新.这就是之后会提到的_双向数据绑定_.
 
 ---
 
@@ -76,7 +76,7 @@
 
 **Invocie1.js**
 
-```
+```js
 
   this.cost = 2;
   this.inCurr = 'EUR';
@@ -123,7 +123,7 @@
 接下来的例子会将金钱的转换移动到服务中.
 **finance2.js**
 
-```
+```js
 angular.module('finance2', [])
 .factory('currencyConverter', function() {
   var currencies = ['USD', 'EUR', 'CNY'];
@@ -145,7 +145,7 @@ angular.module('finance2', [])
 
 **invoice2.js**
 
-```
+```js
 angular.module('invoice2', ['finance2'])
  .controller('InvoiceController', ['currencyConverter',
 function InvoiceController(currencyConverter) {
@@ -202,10 +202,12 @@ function InvoiceController(currencyConverter) {
 
 ---
 
-##访问服务器
+## 访问服务器
+
 接下来的例子完成从雅虎金融APi获取汇率的功能.
 **invoice3.js**
-```
+
+```js
 angular.module('invoice3', ['finance3'])
 .controller('InvoiceController', ['currencyConverter', function InvoiceController(currencyConverter) {
   this.qty = 1;
@@ -221,8 +223,10 @@ angular.module('invoice3', ['finance3'])
   };
 }]);
 ```
+
 **finance3.js**
-```
+
+```js
 angular.module('finance3', [])
 .factory('currencyConverter', ['$http', function($http) {
   var YAHOO_FINANCE_URL_PATTERN =
@@ -257,7 +261,9 @@ angular.module('finance3', [])
   };
 }]);
 ```
+
 **index.html**
+
 ```
 <div ng-app="invoice3" ng-controller="InvoiceController as invoice">
   <b>Invoice:</b>
@@ -279,5 +285,6 @@ angular.module('finance3', [])
   </div>
 </div>
 ```
+
 我们`finance`模块的`currencyConverter`服务现在使用了`$http`.一个由Angular提供的访问后台服务器的内建的服务.`$http`是一个`XMLHttpRequest`和'JSONP'的包装器.
 
