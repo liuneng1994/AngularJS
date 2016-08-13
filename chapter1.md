@@ -279,5 +279,5 @@ angular.module('finance3', [])
   </div>
 </div>
 ```
-我们`finance`模块的`currencyConverter`服务现在使用了`$http`.一个由Angular提供的访问后台服务器的内建的服务.`$http`
+我们`finance`模块的`currencyConverter`服务现在使用了`$http`.一个由Angular提供的访问后台服务器的内建的服务.`$http`是一个`XMLHttpRequest`和'JSONP'的包装器.
 
