@@ -1,0 +1,22 @@
+{
+    "plugins": [
+        "prettify-html",
+        "tree",
+        "theme-official",
+        "theme-bangla",
+        "theme-api",
+        "theme-arangodb",
+        "tbfed-pagefooter"
+    ],
+    "pluginsConfig": {
+        "theme-arangodb": {
+            "styles": "",
+            "showLevel": "false"
+        },
+        "fontsettings": {
+            "theme": "sepia",
+            "family": "sans",
+            "size": 2
+        }
+    }
+}
